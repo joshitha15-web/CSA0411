@@ -1,0 +1,50 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Employee {
+    int id;
+    char name[20];
+    float salary;
+};
+
+int main() {
+    FILE *fp;
+    struct Employee emp;
+    int choice, pos;
+
+    fp = fopen("employee.dat", "rb+");
+    if (fp == NULL) fp = fopen("employee.dat", "wb+");
+
+    do {
+        printf("\n1. Add Employee\n2. Display All\n3. Update Salary by ID\n4. Exit\nEnter choice: ");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1:
+                printf("Enter ID, Name, Salary: ");
+                scanf("%d %s %f", &emp.id, emp.name, &emp.salary);
+                fseek(fp, (emp.id - 1) * sizeof(emp), SEEK_SET);
+                fwrite(&emp, sizeof(emp), 1, fp);
+                break;
+            case 2:
+                rewind(fp);
+                while (fread(&emp, sizeof(emp), 1, fp)) {
+                    printf("ID: %d Name: %s Salary: %.2f\n", emp.id, emp.name, emp.salary);
+                }
+                break;
+            case 3:
+                printf("Enter ID to update salary: ");
+                scanf("%d", &pos);
+                fseek(fp, (pos - 1) * sizeof(emp), SEEK_SET);
+                fread(&emp, sizeof(emp), 1, fp);
+                printf("Current Salary: %.2f\n", emp.salary);
+                printf("Enter new Salary: ");
+                scanf("%f", &emp.salary);
+                fseek(fp, (pos - 1) * sizeof(emp), SEEK_SET);
+                fwrite(&emp, sizeof(emp), 1, fp);
+                break;
+        }
+    } while (choice != 4);
+
+    fclose(fp);
+    return 0;
+}

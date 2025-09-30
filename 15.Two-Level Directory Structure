@@ -1,0 +1,50 @@
+#include <stdio.h>
+#include <string.h>
+
+struct Directory {
+    char dname[10];
+    char fname[10][10];
+    int fcount;
+};
+
+int main() {
+    struct Directory dir[10];
+    int dcount = 0, choice;
+    char dname[10], fname[10];
+
+    do {
+        printf("\n1. Create Directory\n2. Create File\n3. List Files\n4. Exit\nEnter choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter directory name: ");
+                scanf("%s", dname);
+                strcpy(dir[dcount].dname, dname);
+                dir[dcount].fcount = 0;
+                dcount++;
+                break;
+            case 2:
+                printf("Enter directory name: ");
+                scanf("%s", dname);
+                for (int i = 0; i < dcount; i++) {
+                    if (strcmp(dir[i].dname, dname) == 0) {
+                        printf("Enter file name: ");
+                        scanf("%s", fname);
+                        strcpy(dir[i].fname[dir[i].fcount++], fname);
+                        break;
+                    }
+                }
+                break;
+            case 3:
+                for (int i = 0; i < dcount; i++) {
+                    printf("Directory: %s\n", dir[i].dname);
+                    for (int j = 0; j < dir[i].fcount; j++) {
+                        printf("  %s\n", dir[i].fname[j]);
+                    }
+                }
+                break;
+        }
+    } while (choice != 4);
+    return 0;
+}

@@ -1,0 +1,60 @@
+#include <stdio.h>
+
+struct Process {
+    int pid, at, bt, priority, remainingTime;
+    int wt, tat, completed;
+};
+
+int main() {
+    int n;
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+
+    struct Process p[n];
+    for (int i = 0; i < n; i++) {
+        p[i].pid = i + 1;
+        printf("Enter AT, BT and Priority for P%d: ", p[i].pid);
+        scanf("%d %d %d", &p[i].at, &p[i].bt, &p[i].priority);
+        p[i].remainingTime = p[i].bt;
+        p[i].completed = 0;
+    }
+
+    int time = 0, completed = 0;
+    float totalWT = 0, totalTAT = 0;
+
+    while (completed < n) {
+        int idx = -1, minPriority = 9999;
+        for (int i = 0; i < n; i++) {
+            if (p[i].at <= time && !p[i].completed && p[i].priority < minPriority && p[i].remainingTime > 0) {
+                minPriority = p[i].priority;
+                idx = i;
+            }
+        }
+
+        if (idx != -1) {
+            p[idx].remainingTime--;
+            time++;
+
+            if (p[idx].remainingTime == 0) {
+                p[idx].completed = 1;
+                completed++;
+                p[idx].tat = time - p[idx].at;
+                p[idx].wt = p[idx].tat - p[idx].bt;
+                totalWT += p[idx].wt;
+                totalTAT += p[idx].tat;
+            }
+        } else {
+            time++;
+        }
+    }
+
+    printf("\nProcess\tAT\tBT\tPrio\tWT\tTAT\n");
+    for (int i = 0; i < n; i++) {
+        printf("P%d\t%d\t%d\t%d\t%d\t%d\n", p[i].pid, p[i].at, p[i].bt, p[i].priority, p[i].wt, p[i].tat);
+    }
+
+    printf("\nAvg Waiting Time: %.2f", totalWT / n);
+    printf("\nAvg Turnaround Time: %.2f\n", totalTAT / n);
+
+    return 0;
+}

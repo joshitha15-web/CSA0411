@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <string.h>
+
+struct Directory {
+    char filenames[10][20];
+    int count;
+};
+
+int main() {
+    struct Directory dir;
+    dir.count = 0;
+    int choice;
+    char name[20];
+
+    do {
+        printf("\n1. Create File\n2. Delete File\n3. List Files\n4. Exit\nEnter choice: ");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1:
+                printf("Enter file name: ");
+                scanf("%s", name);
+                strcpy(dir.filenames[dir.count++], name);
+                break;
+            case 2:
+                printf("Enter file name to delete: ");
+                scanf("%s", name);
+                for (int i = 0; i < dir.count; i++) {
+                    if (strcmp(dir.filenames[i], name) == 0) {
+                        strcpy(dir.filenames[i], dir.filenames[--dir.count]);
+                        break;
+                    }
+                }
+                break;
+            case 3:
+                printf("Files:\n");
+                for (int i = 0; i < dir.count; i++) {
+                    printf("%s\n", dir.filenames[i]);
+                }
+                break;
+        }
+    } while (choice != 4);
+    return 0;
+}

@@ -1,0 +1,84 @@
+#include <stdio.h>
+
+struct Process {
+    int pid;
+    int arrivalTime;
+    int burstTime;
+    int priority;
+    int waitingTime;
+    int turnaroundTime;
+    int completed;
+};
+
+// Function to find the process with the highest priority at current time
+int findHighestPriority(struct Process proc[], int n, int currentTime) {
+    int highestPriority = 9999;
+    int index = -1;
+
+    for (int i = 0; i < n; i++) {
+        if (!proc[i].completed && proc[i].arrivalTime <= currentTime) {
+            if (proc[i].priority < highestPriority) {
+                highestPriority = proc[i].priority;
+                index = i;
+            }
+        }
+    }
+    return index;
+}
+
+int main() {
+    int n;
+    struct Process proc[20];
+
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+
+    // Input process details
+    for (int i = 0; i < n; i++) {
+        proc[i].pid = i + 1;
+        printf("Enter Arrival Time, Burst Time, and Priority for Process P%d: ", proc[i].pid);
+        scanf("%d %d %d", &proc[i].arrivalTime, &proc[i].burstTime, &proc[i].priority);
+        proc[i].completed = 0;
+    }
+
+    int completed = 0, currentTime = 0;
+    float totalWT = 0, totalTAT = 0;
+
+    printf("\nGantt Chart:\n");
+
+    while (completed < n) {
+        int idx = findHighestPriority(proc, n, currentTime);
+        if (idx != -1) {
+            struct Process *p = &proc[idx];
+
+            p->waitingTime = currentTime - p->arrivalTime;
+            if (p->waitingTime < 0) p->waitingTime = 0;
+
+            currentTime += p->burstTime;
+            p->turnaroundTime = p->waitingTime + p->burstTime;
+            p->completed = 1;
+            completed++;
+
+            totalWT += p->waitingTime;
+            totalTAT += p->turnaroundTime;
+
+            printf("| P%d ", p->pid);
+        } else {
+            currentTime++;
+        }
+    }
+    printf("|\n");
+
+    // Display process table
+    printf("\nProcess\tAT\tBT\tPrio\tWT\tTAT\n");
+    for (int i = 0; i < n; i++) {
+        printf("P%d\t%d\t%d\t%d\t%d\t%d\n", proc[i].pid, proc[i].arrivalTime,
+               proc[i].burstTime, proc[i].priority,
+               proc[i].waitingTime, proc[i].turnaroundTime);
+    }
+
+    printf("\nAverage Waiting Time: %.2f", totalWT / n);
+    printf("\nAverage Turnaround Time: %.2f\n", totalTAT / n);
+
+    return 0;
+}

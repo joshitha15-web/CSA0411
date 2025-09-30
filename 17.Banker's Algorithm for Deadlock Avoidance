@@ -1,0 +1,14 @@
+#include <stdio.h>
+
+int main() {
+    int n, r, i, j, k;
+    printf("Enter number of processes and resources: ");
+    scanf("%d%d", &n, &r);
+
+    int alloc[n][r], max[n][r], avail[r], need[n][r];
+    printf("Enter allocation matrix:\n");
+    for (i = 0; i < n; i++)
+        for (j = 0; j < r; j++)
+            scanf("%d", &alloc[i][j]);
+
+    printf

@@ -1,0 +1,14 @@
+#include <stdio.h>
+#include <pthread.h>
+
+void* threadFunc(void* arg) {
+    printf("Thread running\n");
+    pthread_exit(NULL);
+}
+
+int main() {
+    pthread_t t1, t2;
+    pthread_create(&t1, NULL, threadFunc, NULL);
+    pthread_create(&t2, NULL, threadFunc, NULL);
+
+   

@@ -1,0 +1,31 @@
+#include <stdio.h>
+#define SIZE 3
+
+int main() {
+    int pages[] = {1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5};
+    int n = sizeof(pages)/sizeof(pages[0]);
+    int frames[SIZE], time[SIZE], faults = 0;
+
+    for (int i = 0; i < SIZE; i++) frames[i] = -1;
+
+    for (int i = 0; i < n; i++) {
+        int found = 0;
+        for (int j = 0; j < SIZE; j++) {
+            if (frames[j] == pages[i]) {
+                found = 1;
+                time[j] = i;
+                break;
+            }
+        }
+        if (!found) {
+            int lru = 0;
+            for (int j = 1; j < SIZE; j++)
+                if (time[j] < time[lru]) lru = j;
+            frames[lru] = pages[i];
+            time[lru] = i;
+            faults++;
+        }
+    }
+    printf("Total Page Faults (LRU): %d\n", faults);
+    return 0;
+}

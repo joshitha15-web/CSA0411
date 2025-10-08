@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# Create a sample file
+touch demo.txt
+echo "This is a demo file." > demo.txt
+
+# Display initial permissions
+echo "Initial permissions:"
+ls -l demo.txt
+
+# Change permissions: rwx for owner, r-x for group, r-- for others
+chmod 754 demo.txt
+echo "After chmod 754 (rwxr-xr--):"
+ls -l demo.txt
+
+# Create a new user and group (requires sudo)
+# sudo useradd testuser
+# sudo groupadd testgroup
+# sudo usermod -aG testgroup testuser
+
+# Change ownership to a specific user and group
+sudo chown $USER:$USER demo.txt
+echo "After chown to current user and group:"
+ls -l demo.txt
+
+# Show symbolic permission change
+chmod u=rwx,g=rx,o=r demo.txt
+echo "After symbolic chmod u=rwx,g=rx,o=r:"
+ls -l demo.txt
+
+# Create a directory and set execute permission
+mkdir demo_dir
+chmod 751 demo_dir
+echo "Directory permissions:"
+ls -ld demo_dir
